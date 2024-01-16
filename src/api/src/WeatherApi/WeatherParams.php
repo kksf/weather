@@ -116,10 +116,14 @@ class WeatherParams {
      * @param array $data
      * @return void
      */
-    public function hydrateFromArray(array $data) : void {
+    public function fromArray(array $data) : void {
         foreach ($data as $param => $value) {
-            $this->params[$param] = $value;
+            $this->set($param, $value);
         }
+    }
+
+    public function set(string $param, string $value) : void {
+        $this->params[$param] = $value;
     }
 
     /**

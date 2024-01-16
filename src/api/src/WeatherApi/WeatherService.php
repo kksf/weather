@@ -16,11 +16,16 @@ class WeatherService {
         $this->httpClient = HttpClient::create();
     }
 
-    public function getWeatherCurrent(): array {
-        return $this->send($this->urlWeatherCurrent);
+    public function getWeatherCurrent(array $params): array {
+        $weatherParams = new WeatherParams();
+        $weatherParams->fromArray($params);
+        $weatherParams->set(WeatherParams::API_KEY, $this->urlWeatherApiKey);
+
+        return $this->send($this->urlWeatherCurrent, $weatherParams->getAllPopulated());
     }
 
-    private function send(string $url) : array {
+    private function send(string $url, array $params) : array {
+        $url = $url . '?' . http_build_query($params);
         $response = $this->httpClient->request('GET', $url);
 
         return $response->toArray();

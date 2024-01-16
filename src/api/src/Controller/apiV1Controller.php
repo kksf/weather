@@ -6,6 +6,7 @@ use App\WeatherApi\WeatherService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -19,19 +20,14 @@ class apiV1Controller extends AbstractController
 
     #[Route(['/api/v1', '/api', '/'], name: 'index')]
     public function index(): JsonResponse {
-//        $Weather = new \Weather($this->httpClient);
-
-//        $response = $this->httpClient->request(
-//            'GET',
-//            'https://api.github.com/repos/symfony/symfony-docs'
-//        );
-//
-//        $a = $this->container->get('parameter_bag')->get('weather.url.current');
-//        return new JsonResponse($a);
-        return new JsonResponse($this->Weather->send());
-
-
-
+        return new JsonResponse([
+            'action' => 'index',
+            'routes' => [
+                'login' => '/api/v1/login',
+                'now' => '/api/v1/now',
+                'forecast' => '/api/v1/forecast',
+            ]
+        ]);
     }
 
     #[Route('/api/v1/login', name: 'login')]
@@ -40,8 +36,11 @@ class apiV1Controller extends AbstractController
     }
 
     #[Route('/api/v1/now', name: 'now')]
-    public function now(): Response {
-        return new JsonResponse(['action' => 'now']);
+    public function now(Request $request): Response {
+        dd($request->query->all());
+        //dd($this->container->get('request_stack')->getMainRequest()->query->all());
+
+        return new JsonResponse($this->weatherService->getWeatherCurrent([]));
     }
 
     #[Route('/api/v1/forecast', name: 'forecast')]
