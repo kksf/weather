@@ -19,12 +19,6 @@ class apiV1Controller extends AbstractController
 
     #[Route(['/api/v1', '/api', '/'], name: 'index')]
     public function index(): JsonResponse {
-
-        $this->weatherService->send();
-
-
-
-
 //        $Weather = new \Weather($this->httpClient);
 
 //        $response = $this->httpClient->request(
