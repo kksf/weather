@@ -110,10 +110,13 @@ class WeatherParams {
         self::API_KEY   => null,
     ];
 
+    /**
+     * Get all params with non-null values.
+     *
+     * @return array
+     */
     public function getAll() : array {
-        $out = array_filter($this->params, fn($value) => $value !== null);
-
-        return $out;
+        return array_filter($this->params, fn($value) => $value !== null);
     }
 
 }
