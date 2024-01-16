@@ -111,11 +111,23 @@ class WeatherParams {
     ];
 
     /**
+     * Populate params from array.
+     *
+     * @param array $data
+     * @return void
+     */
+    public function hydrateFromArray(array $data) : void {
+        foreach ($data as $param => $value) {
+            $this->params[$param] = $value;
+        }
+    }
+
+    /**
      * Get all params with non-null values.
      *
      * @return array
      */
-    public function getAll() : array {
+    public function getAllPopulated() : array {
         return array_filter($this->params, fn($value) => $value !== null);
     }
 
