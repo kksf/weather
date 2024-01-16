@@ -11,7 +11,7 @@ class WeatherParams {
      *
      * @var string $q
      */
-    public static string $q;
+    const string CITY_NAME = 'q';
 
     /**
      * *City ID**.
@@ -24,7 +24,7 @@ class WeatherParams {
      *
      * @var string $id
      */
-    public static string $id;
+    const string CITY_ID = 'id';
 
     /**
      * *Latitude**.
@@ -33,7 +33,7 @@ class WeatherParams {
      *
      * @var string $lat
      */
-    public static string $lat;
+    const string LATITUDE = 'lat';
 
     /**
      * *Longitude**.
@@ -42,7 +42,7 @@ class WeatherParams {
      *
      * @var string $lon
      */
-    public static string $lon;
+    const string LONGITUDE = 'lon';
 
     /**
      * *Zip code**. * Search by zip code.
@@ -51,7 +51,7 @@ class WeatherParams {
      *
      * @var string $zip
      */
-    public static string $zip;
+    const string ZIP_CODE = 'zip';
 
     /**
      * *Units**.
@@ -61,7 +61,7 @@ class WeatherParams {
      *
      * @var string $units
      */
-    public static string $units;
+    const string UNITS = 'units';
 
     /**
      * *Language**.
@@ -72,9 +72,9 @@ class WeatherParams {
      *  Bulgarian - `bg`,
      *  Catalan - `ca`, etc...
      *
-     * @var string
+     * @var string $lang
      */
-    public static string $lang;
+    const string LANGUAGE = 'lang';
 
     /**
      * *Mode**.
@@ -82,17 +82,38 @@ class WeatherParams {
      * Determines the format of the response. Possible values are `xml` and `html`.
      * If the mode parameter is empty, the format is `json` by default.
      *
-     * @var string
+     * @var string $Mode
      */
-    public static string $Mode;
+    const string MODE = 'mode';
 
     /**
      * *API Key**.
      * *Example: 52a17d91b3ed0697b05a7dd6fdc708c4*.
      * API Keys are associated with developer accounts.
      *
-     * @var string
+     * @var string $appid
      */
-    public static string $appid;
+    const string API_KEY = 'appid';
+
+    /**
+     * @var array $params
+     */
+    private array $params = [
+        self::CITY_NAME => null,
+        self::CITY_ID   => null,
+        self::LATITUDE  => null,
+        self::LONGITUDE => null,
+        self::ZIP_CODE  => null,
+        self::UNITS     => null,
+        self::LANGUAGE  => null,
+        self::MODE      => null,
+        self::API_KEY   => null,
+    ];
+
+    public function getAll() : array {
+        $out = array_filter($this->params, fn($value) => $value !== null);
+
+        return $out;
+    }
 
 }
