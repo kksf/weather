@@ -2,12 +2,14 @@
 
 namespace App\Controller;
 
+use App\DTO\WeatherRequestDTO;
 use App\WeatherApi\WeatherService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class apiV1Controller extends AbstractController
@@ -16,6 +18,7 @@ class apiV1Controller extends AbstractController
 
     public function __construct(
         private WeatherService $weatherService,
+        private ValidatorInterface $validator,
     ) {}
 
     #[Route(['/api/v1', '/api', '/'], name: 'index')]
@@ -37,8 +40,11 @@ class apiV1Controller extends AbstractController
 
     #[Route('/api/v1/now', name: 'now')]
     public function now(Request $request): Response {
-        dd($request->query->all());
-        //dd($this->container->get('request_stack')->getMainRequest()->query->all());
+        $weatherParams = new WeatherRequestDTO();
+        $weatherParams->fromArray($request->query->all());
+//        $weatherParams->setAsdAsd($request->query->get('asdAsd'));
+        $errors = $this->validator->validate($weatherParams);
+        dd($errors);
 
         return new JsonResponse($this->weatherService->getWeatherCurrent([]));
     }
