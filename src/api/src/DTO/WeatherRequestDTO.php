@@ -24,6 +24,18 @@ class WeatherRequestDTO {
     )]
     private ?float $longitude;
 
+    public function getCityName(): ?string {
+        return $this->cityName;
+    }
+
+    public function getLatitude(): ?float {
+        return $this->latitude;
+    }
+
+    public function getLongitude(): ?float {
+        return $this->longitude;
+    }
+
     public function fromArray(array $data): void {
         $this->cityName = $data['cityName'] ?? null;
         $this->latitude = $data['latitude'] ?? null;

@@ -15,9 +15,9 @@ services:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
         bind:
-            string $urlWeatherCurrent: '%env(WEATHER_CURRENT)%'
-            string $urlWeatherForecast: '%env(WEATHER_FORECAST)%'
-            string $urlWeatherApiKey: '%env(WEATHER_API_KEY)%'
+            string $weatherUrlCurrent: '%env(WEATHER_CURRENT)%'
+            string $weatherUrlForecast: '%env(WEATHER_FORECAST)%'
+            string $weatherApiKey: '%env(WEATHER_API_KEY)%'
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name

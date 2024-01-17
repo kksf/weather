@@ -1,6 +1,8 @@
 <?php
 namespace App\WeatherApi;
 
+use App\DTO\OpenWeatherMapRequestDTO;
+use App\DTO\WeatherRequestDTO;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -9,19 +11,25 @@ class WeatherService {
     private HttpClientInterface $httpClient;
 
     public function __construct(
-        private readonly string $urlWeatherCurrent,
-        private readonly string $urlWeatherForecast,
-        private readonly string $urlWeatherApiKey,
+        private readonly string $weatherUrlCurrent,
+        private readonly string $weatherUrlForecast,
+        private readonly string $weatherApiKey,
     ) {
         $this->httpClient = HttpClient::create();
     }
 
-    public function getWeatherCurrent(array $params): array {
-        $weatherParams = new WeatherParams();
-        $weatherParams->fromArray($params);
-        $weatherParams->set(WeatherParams::API_KEY, $this->urlWeatherApiKey);
+    public function getWeatherCurrent(WeatherRequestDTO $weatherRequestDTO): array {
+        return $this->send(
+            $this->weatherUrlCurrent,
+            $this->WeatherRequestDTOToOpenWeatherMapRequestDTO($weatherRequestDTO)->toArrayNotEmptyOnly()
+        );
+    }
 
-        return $this->send($this->urlWeatherCurrent, $weatherParams->getAllPopulated());
+    public function getWeatherForecast(WeatherRequestDTO $weatherRequestDTO): array {
+        return $this->send(
+            $this->weatherUrlForecast,
+            $this->WeatherRequestDTOToOpenWeatherMapRequestDTO($weatherRequestDTO)->toArrayNotEmptyOnly()
+        );
     }
 
     private function send(string $url, array $params) : array {
@@ -29,6 +37,20 @@ class WeatherService {
         $response = $this->httpClient->request('GET', $url);
 
         return $response->toArray();
+    }
+
+    private function WeatherRequestDTOToOpenWeatherMapRequestDTO(WeatherRequestDTO $weatherRequestDTO): OpenWeatherMapRequestDTO {
+        $openWeatherMapRequestDTO = new OpenWeatherMapRequestDTO();
+        $openWeatherMapRequestDTO
+            ->setQ($weatherRequestDTO->getCityName())
+            ->setLat($weatherRequestDTO->getLatitude())
+            ->setLon($weatherRequestDTO->getLongitude())
+            ->setUnits('metric')
+            ->setLang('bg')
+            ->setAppid($this->weatherApiKey)
+        ;
+
+        return $openWeatherMapRequestDTO;
     }
 
 
