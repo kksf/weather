@@ -35,50 +35,50 @@ class apiV1Controller extends AbstractController
 
     #[Route('/api/v1/now', name: 'now')]
     public function now(Request $request): Response {
-        $weatherParams = new WeatherRequestDTO();
-        $weatherParams->fromArray($request->query->all());
-        $errors = $this->validator->validate($weatherParams);
+        $WeatherResponse = new WeatherResponseDTO();
+        $WeatherRequest = new WeatherRequestDTO();
+        $WeatherRequest->fromArray($request->query->all());
+        $errors = $this->validator->validate($WeatherRequest);
 
-        $Response = new WeatherResponseDTO();
         if(count($errors) > 0) {
-            $Response->setSuccess(false)->setErrorMessages($errors);
+            $WeatherResponse->setSuccess(false)->setErrorMessages($errors);
 
-            return new JsonResponse($Response->toArray());
+            return new JsonResponse($WeatherResponse->toArray());
         }
 
         try {
-            $weather = $this->weatherService->getWeatherCurrent($weatherParams);
+            $weather = $this->weatherService->getWeatherCurrent($WeatherRequest);
         } catch(\Throwable $e) {
-            $Response->setSuccess(false)->setErrorMessages([$e->getMessage()]);
+            $WeatherResponse->setSuccess(false)->setErrorMessages([$e->getMessage()]);
 
-            return new JsonResponse($Response->toArray());
+            return new JsonResponse($WeatherResponse->toArray());
         }
 
-        return new JsonResponse($Response->setSuccess(true)->setData($weather)->toArray());
+        return new JsonResponse($WeatherResponse->setSuccess(true)->setData($weather)->toArray());
     }
 
     #[Route('/api/v1/forecast', name: 'forecast')]
     public function forecast(Request $request): Response {
-        $weatherParams = new WeatherRequestDTO();
-        $weatherParams->fromArray($request->query->all());
-        $errors = $this->validator->validate($weatherParams);
+        $WeatherResponse = new WeatherResponseDTO();
+        $WeatherRequest = new WeatherRequestDTO();
+        $WeatherRequest->fromArray($request->query->all());
+        $errors = $this->validator->validate($WeatherRequest);
 
-        $Response = new WeatherResponseDTO();
         if(count($errors) > 0) {
-            $Response->setSuccess(false)->setErrorMessages($errors);
+            $WeatherResponse->setSuccess(false)->setErrorMessages($errors);
 
-            return new JsonResponse($Response->toArray());
+            return new JsonResponse($WeatherResponse->toArray());
         }
 
         try {
-            $weather = $this->weatherService->getWeatherForecast($weatherParams);
+            $weather = $this->weatherService->getWeatherForecast($WeatherRequest);
         } catch(\Throwable $e) {
-            $Response->setSuccess(false)->setErrorMessages([$e->getMessage()]);
+            $WeatherResponse->setSuccess(false)->setErrorMessages([$e->getMessage()]);
 
-            return new JsonResponse($Response->toArray());
+            return new JsonResponse($WeatherResponse->toArray());
         }
 
-        return new JsonResponse($Response->setSuccess(true)->setData($weather)->toArray());
+        return new JsonResponse($WeatherResponse->setSuccess(true)->setData($weather)->toArray());
     }
 
 }

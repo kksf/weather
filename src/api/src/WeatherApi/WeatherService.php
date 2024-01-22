@@ -4,7 +4,6 @@ namespace App\WeatherApi;
 use App\DTO\OpenWeatherMapRequestDTO;
 use App\DTO\WeatherRequestDTO;
 use Psr\Cache\CacheItemInterface;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpKernel\Attribute\Cache;
 use Symfony\Contracts\Cache\CacheInterface;
@@ -15,13 +14,14 @@ use Symfony\Contracts\Service\ResetInterface;
 class WeatherService {
 
     private HttpClientInterface $httpClient;
-    private FilesystemAdapter $cache;
+//    private FilesystemAdapter $cache;
 
     public function __construct(
-        private readonly array $weatherConfig
+        private readonly array $weatherConfig,
+        private readonly CacheInterface $cache,
     ) {
         $this->httpClient = HttpClient::create();
-        $this->cache = new FilesystemAdapter();
+//        $this->cache = new Cache();
     }
 
     public function getWeatherCurrent(WeatherRequestDTO $weatherRequestDTO): array {
@@ -40,16 +40,13 @@ class WeatherService {
 
     private function send(string $url, array $params) : array {
         $url = $url . '?' . http_build_query($params);
-
-        $value = $this->cache->get(md5($url), function (ItemInterface $item) use ($url) : \Symfony\Contracts\HttpClient\ResponseInterface {
+        $value = $this->cache->get(md5($url), function (ItemInterface $item) use ($url) : array {
             $item->expiresAfter($this->weatherConfig['cacheTtl']);
-            $this->cache->delete(md5($url));
-            $response = $this->httpClient->request('GET', $url);
 
-            return $response;
+            return $this->httpClient->request('GET', $url)->toArray();
         });
 
-        return $value->toArray();
+        return $value;
     }
 
     private function WeatherRequestDTOToOpenWeatherMapRequestDTO(WeatherRequestDTO $weatherRequestDTO): OpenWeatherMapRequestDTO {

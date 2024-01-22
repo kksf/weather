@@ -9,7 +9,7 @@ parameters:
             current: 'http://api.openweathermap.org/data/2.5/weather'
             forecast: 'http://api.openweathermap.org/data/2.5/forecast'
         apiKey: '%env(WEATHER_API_KEY)%'
-        cacheTtl: 3600
+        cacheTtl: 3600 # 1 hour
 
 services:
     # Default configuration for services in *this* file
